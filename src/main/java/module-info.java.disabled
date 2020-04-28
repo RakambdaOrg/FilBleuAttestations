@@ -1,0 +1,10 @@
+open module fr.raksrinana.filbleuattestations {
+	requires com.fasterxml.jackson.core;
+	requires com.fasterxml.jackson.annotation;
+	requires com.fasterxml.jackson.databind;
+	requires org.slf4j;
+	requires ch.qos.logback.classic;
+	requires jcommander;
+	requires com.codeborne.selenide;
+	requires static lombok;
+}

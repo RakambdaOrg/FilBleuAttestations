@@ -1,0 +1,10 @@
+.gradle/
+.idea/
+build/
+logs/
+out/
+target/
+
+*.iml
+config.json
+secrets.properties
