@@ -40,8 +40,14 @@ public class Main{
 			log.info("Configuration loaded");
 			final var mailSession = MailUtils.getMailSession(configuration.getMail().getHost(), configuration.getMail().getPort(), configuration.getMail().getUsername(), configuration.getMail().getPassword());
 			log.info("Created mail session");
-			log.info("Logging in");
+			log.info("Opening page");
 			open("https://www.filbleu.fr/espace-perso");
+			final var perturbation = $(id("actperturbperturb_153"));
+			if(perturbation.isDisplayed()){
+				log.info("Closing perturbation window");
+				perturbation.click();
+			}
+			log.info("Logging in");
 			$(id("username")).setValue(configuration.getEmail());
 			$(id("password")).setValue(configuration.getPassword());
 			$(id("form-login-submit")).find(tagName("button")).click();
