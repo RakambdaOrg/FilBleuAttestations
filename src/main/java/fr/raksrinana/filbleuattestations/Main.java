@@ -17,10 +17,10 @@ import jakarta.mail.internet.MimeMultipart;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import java.text.MessageFormat;
 import static com.codeborne.selenide.Selenide.*;
-import static org.openqa.selenium.By.id;
-import static org.openqa.selenium.By.tagName;
+import static org.openqa.selenium.By.*;
 
 @Slf4j
 public class Main{
@@ -35,14 +35,15 @@ public class Main{
 			return;
 		}
 		com.codeborne.selenide.Configuration.headless = true;
-		WebDriverRunner.setWebDriver(new FirefoxDriver());
+		var firefoxOptions = new FirefoxOptions();
+		WebDriverRunner.setWebDriver(new FirefoxDriver(firefoxOptions));
 		Configuration.loadConfiguration(parameters.getConfigurationFile()).ifPresentOrElse(configuration -> {
 			log.info("Configuration loaded");
 			final var mailSession = MailUtils.getMailSession(configuration.getMail().getHost(), configuration.getMail().getPort(), configuration.getMail().getUsername(), configuration.getMail().getPassword());
 			log.info("Created mail session");
 			log.info("Opening page");
 			open("https://www.filbleu.fr/espace-perso");
-			final var perturbation = $(id("actperturbperturb_153"));
+			final var perturbation = $(className("actperturb"));
 			if(perturbation.isDisplayed()){
 				log.info("Closing perturbation window");
 				perturbation.click();
@@ -55,7 +56,7 @@ public class Main{
 			configuration.getCards().forEach(card -> {
 				log.info("Processing card {}", card.getId());
 				open("https://www.filbleu.fr/espace-perso/mes-cartes/" + card.getId());
-				$(By.className("attestation")).findAll(By.tagName("li")).stream().map(elem -> elem.find(By.tagName("a"))).forEach(attestation -> {
+				$(className("attestation")).findAll(By.tagName("li")).stream().map(elem -> elem.find(By.tagName("a"))).forEach(attestation -> {
 					if(!card.getDownloaded().contains(attestation.getText())){
 						log.info("Processing attestation '{}'", attestation.getText());
 						try{

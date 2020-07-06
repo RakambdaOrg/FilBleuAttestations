@@ -12,7 +12,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -50,7 +49,7 @@ public class Configuration{
 	}
 	
 	@NonNull
-	public static void saveConfiguration(@NonNull final Path path, @Nonnull Configuration configuration){
+	public static void saveConfiguration(@NonNull final Path path, @NonNull Configuration configuration){
 		try{
 			objectWriter.writeValueAsString(configuration);
 			objectWriter.writeValue(path.toFile(), configuration);
