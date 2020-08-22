@@ -6,10 +6,8 @@ open module fr.raksrinana.filbleuattestations {
 	requires com.fasterxml.jackson.core;
 	requires com.fasterxml.jackson.annotation;
 	requires com.fasterxml.jackson.databind;
-	requires jakarta.mail;
-	requires fr.raksrinana.utils.mail;
 	requires com.codeborne.selenide;
-	requires jakarta.activation;
 	requires selenium.api;
 	requires selenium.firefox.driver;
+	requires org.simplejavamail.core;
 }

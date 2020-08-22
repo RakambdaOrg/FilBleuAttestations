@@ -1,23 +1,19 @@
 package fr.raksrinana.filbleuattestations;
 
-import com.beust.jcommander.JCommander;
-import com.beust.jcommander.ParameterException;
 import com.codeborne.selenide.WebDriverRunner;
 import fr.raksrinana.filbleuattestations.config.Configuration;
-import fr.raksrinana.utils.mail.MailUtils;
-import jakarta.activation.DataHandler;
-import jakarta.activation.DataSource;
-import jakarta.activation.FileDataSource;
-import jakarta.mail.BodyPart;
-import jakarta.mail.Message;
-import jakarta.mail.MessagingException;
-import jakarta.mail.Multipart;
-import jakarta.mail.internet.MimeBodyPart;
-import jakarta.mail.internet.MimeMultipart;
+import fr.raksrinana.filbleuattestations.config.Mail;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import org.simplejavamail.api.mailer.Mailer;
+import org.simplejavamail.email.EmailBuilder;
+import org.simplejavamail.mailer.MailerBuilder;
+import picocli.CommandLine;
+import javax.activation.FileDataSource;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.MessageFormat;
 import static com.codeborne.selenide.Selenide.*;
 import static org.openqa.selenium.By.*;
@@ -26,12 +22,15 @@ import static org.openqa.selenium.By.*;
 public class Main{
 	public static void main(String[] args){
 		final var parameters = new CLIParameters();
+		var cli = new CommandLine(parameters);
+		cli.registerConverter(Path.class, Paths::get);
+		cli.setUnmatchedArgumentsAllowed(true);
 		try{
-			JCommander.newBuilder().addObject(parameters).build().parse(args);
+			cli.parseArgs(args);
 		}
-		catch(final ParameterException e){
+		catch(final CommandLine.ParameterException e){
 			log.error("Failed to parse arguments", e);
-			e.usage();
+			cli.usage(System.out);
 			return;
 		}
 		com.codeborne.selenide.Configuration.headless = true;
@@ -39,8 +38,8 @@ public class Main{
 		WebDriverRunner.setWebDriver(new FirefoxDriver(firefoxOptions));
 		Configuration.loadConfiguration(parameters.getConfigurationFile()).ifPresentOrElse(configuration -> {
 			log.info("Configuration loaded");
-			final var mailSession = MailUtils.getMailSession(configuration.getMail().getHost(), configuration.getMail().getPort(), configuration.getMail().getUsername(), configuration.getMail().getPassword());
-			log.info("Created mail session");
+			var mailer = buildMailer(configuration.getMail());
+			log.info("Created mailer");
 			log.info("Opening page");
 			open("https://www.filbleu.fr/espace-perso");
 			final var perturbation = $(className("actperturb"));
@@ -64,24 +63,16 @@ public class Main{
 							attestationFile.deleteOnExit();
 							log.info("Downloaded to {}", attestationFile);
 							log.info("Sending mail");
-							MailUtils.sendMail(mailSession, configuration.getMail().getFromEmail(), configuration.getMail().getFromName(), message -> {
-								try{
-									message.addRecipients(Message.RecipientType.TO, card.getRecipientEmail());
-									message.setSubject(MessageFormat.format("Attestation FilBleu {0}", attestation.getText()));
-									BodyPart messageBodyPart = new MimeBodyPart();
-									Multipart multipart = new MimeMultipart();
-									messageBodyPart.setText(MessageFormat.format("Attestation FilBleu du {0}", attestation.getText()));
-									DataSource source = new FileDataSource(attestationFile);
-									messageBodyPart.setDataHandler(new DataHandler(source));
-									messageBodyPart.setFileName(attestationFile.getName());
-									multipart.addBodyPart(messageBodyPart);
-									message.setContent(multipart);
-								}
-								catch(MessagingException e){
-									log.error("Failed to prepare mail");
-									throw new RuntimeException(e);
-								}
-							});
+							
+							var email = EmailBuilder.startingBlank()
+									.from(configuration.getMail().getFromName(), configuration.getMail().getFromEmail())
+									.to(card.getRecipientEmail())
+									.withSubject(MessageFormat.format("Attestation FilBleu {0}", attestation.getText()))
+									.withPlainText(MessageFormat.format("Attestation FilBleu du {0}", attestation.getText()))
+									.withAttachment(attestationFile.getName(), new FileDataSource(attestationFile))
+									.buildEmail();
+							
+							mailer.sendMail(email);
 							log.info("Mail sent");
 							card.getDownloaded().add(attestation.getText());
 						}
@@ -94,5 +85,10 @@ public class Main{
 			closeWebDriver();
 			Configuration.saveConfiguration(parameters.getConfigurationFile(), configuration);
 		}, () -> log.error("Failed to load configuration from {}", parameters.getConfigurationFile()));
+	}
+	
+	private static Mailer buildMailer(Mail mail){
+		return MailerBuilder.withSMTPServer(mail.getHost(), mail.getPort(), mail.getUsername(), mail.getPassword())
+				.buildMailer();
 	}
 }
