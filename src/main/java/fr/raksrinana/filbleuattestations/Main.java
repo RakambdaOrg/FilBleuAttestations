@@ -55,32 +55,36 @@ public class Main{
 			configuration.getCards().forEach(card -> {
 				log.info("Processing card {}", card.getId());
 				open("https://www.filbleu.fr/espace-perso/mes-cartes/" + card.getId());
-				$(className("attestation")).findAll(By.tagName("li")).stream().map(elem -> elem.find(By.tagName("a"))).forEach(attestation -> {
-					if(!card.getDownloaded().contains(attestation.getText())){
-						log.info("Processing attestation '{}'", attestation.getText());
-						try{
-							var attestationFile = attestation.download(30000);
-							attestationFile.deleteOnExit();
-							log.info("Downloaded to {}", attestationFile);
-							log.info("Sending mail");
-							
-							var email = EmailBuilder.startingBlank()
-									.from(configuration.getMail().getFromName(), configuration.getMail().getFromEmail())
-									.to(card.getRecipientEmail())
-									.withSubject(MessageFormat.format("Attestation FilBleu {0}", attestation.getText()))
-									.withPlainText(MessageFormat.format("Attestation FilBleu du {0}", attestation.getText()))
-									.withAttachment(attestationFile.getName(), new FileDataSource(attestationFile))
-									.buildEmail();
-							
-							mailer.sendMail(email);
-							log.info("Mail sent");
-							card.getDownloaded().add(attestation.getText());
-						}
-						catch(Exception e){
-							log.error("Failed to send attestation", e);
-						}
-					}
-				});
+				$(className("attestation"))
+						.findAll(By.tagName("li"))
+						.stream()
+						.map(elem -> elem.find(By.tagName("a")))
+						.forEach(attestation -> {
+							if(!card.getDownloaded().contains(attestation.getText())){
+								log.info("Processing attestation '{}'", attestation.getText());
+								try{
+									var attestationFile = attestation.download(30000);
+									attestationFile.deleteOnExit();
+									log.info("Downloaded to {}", attestationFile);
+									log.info("Sending mail to {}", card.getRecipientEmail());
+									
+									var email = EmailBuilder.startingBlank()
+											.from(configuration.getMail().getFromName(), configuration.getMail().getFromEmail())
+											.to(card.getRecipientEmail())
+											.withSubject(MessageFormat.format("Attestation FilBleu {0}", attestation.getText()))
+											.withPlainText(MessageFormat.format("Attestation FilBleu du {0}", attestation.getText()))
+											.withAttachment(attestationFile.getName(), new FileDataSource(attestationFile))
+											.buildEmail();
+									
+									mailer.sendMail(email);
+									log.info("Mail sent");
+									card.getDownloaded().add(attestation.getText());
+								}
+								catch(Exception e){
+									log.error("Failed to send attestation", e);
+								}
+							}
+						});
 			});
 			closeWebDriver();
 			Configuration.saveConfiguration(parameters.getConfigurationFile(), configuration);
