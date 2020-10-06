@@ -5,8 +5,9 @@ import fr.raksrinana.filbleuattestations.config.Configuration;
 import fr.raksrinana.filbleuattestations.config.Mail;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.simplejavamail.api.mailer.Mailer;
 import org.simplejavamail.email.EmailBuilder;
 import org.simplejavamail.mailer.MailerBuilder;
@@ -34,8 +35,7 @@ public class Main{
 			return;
 		}
 		com.codeborne.selenide.Configuration.headless = true;
-		var firefoxOptions = new FirefoxOptions();
-		WebDriverRunner.setWebDriver(new FirefoxDriver(firefoxOptions));
+		WebDriverRunner.setWebDriver(getDriver());
 		Configuration.loadConfiguration(parameters.getConfigurationFile()).ifPresentOrElse(configuration -> {
 			log.info("Configuration loaded");
 			var mailer = buildMailer(configuration.getMail());
@@ -89,6 +89,17 @@ public class Main{
 			closeWebDriver();
 			Configuration.saveConfiguration(parameters.getConfigurationFile(), configuration);
 		}, () -> log.error("Failed to load configuration from {}", parameters.getConfigurationFile()));
+	}
+	
+	private static WebDriver getDriver(){
+		// var firefoxOptions = new FirefoxOptions();
+		// var driver = new FirefoxDriver(firefoxOptions);
+		
+		var chromeOptions = new ChromeOptions();
+		chromeOptions.setHeadless(true);
+		var driver = new ChromeDriver(chromeOptions);
+		
+		return driver;
 	}
 	
 	private static Mailer buildMailer(Mail mail){
