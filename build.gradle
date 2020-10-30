@@ -9,7 +9,7 @@ buildscript {
         selenide_version = '5.15.1'
 
         simple_java_mail_version = '6.4.4'
-        jakarta_mail_version = '2.0.0'
+        jakarta_mail_version = '1.6.5'
     }
 }
 
