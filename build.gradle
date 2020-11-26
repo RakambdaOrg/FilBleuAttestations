@@ -6,7 +6,7 @@ buildscript {
         picocli_version = '4.5.2'
         jackson_version = '2.11.3'
 
-        selenide_version = '5.16.1'
+        selenide_version = '5.16.2'
 
         simple_java_mail_version = '6.4.4'
         jakarta_mail_version = '1.6.5'
