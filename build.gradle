@@ -8,7 +8,7 @@ buildscript {
 
         selenide_version = '5.18.1'
 
-        simple_java_mail_version = '6.4.4'
+        simple_java_mail_version = '6.4.5'
         jakarta_mail_version = '1.6.5'
     }
 }
