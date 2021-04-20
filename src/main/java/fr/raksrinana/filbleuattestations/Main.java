@@ -3,19 +3,23 @@ package fr.raksrinana.filbleuattestations;
 import com.codeborne.selenide.WebDriverRunner;
 import fr.raksrinana.filbleuattestations.config.Configuration;
 import fr.raksrinana.filbleuattestations.config.Mail;
+import jakarta.mail.*;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeBodyPart;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMultipart;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.simplejavamail.api.mailer.Mailer;
-import org.simplejavamail.email.EmailBuilder;
-import org.simplejavamail.mailer.MailerBuilder;
 import picocli.CommandLine;
-import javax.activation.FileDataSource;
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.MessageFormat;
+import java.util.Properties;
 import static com.codeborne.selenide.Selenide.*;
 import static org.openqa.selenium.By.*;
 
@@ -38,7 +42,7 @@ public class Main{
 		WebDriverRunner.setWebDriver(getDriver());
 		Configuration.loadConfiguration(parameters.getConfigurationFile()).ifPresentOrElse(configuration -> {
 			log.info("Configuration loaded");
-			var mailer = buildMailer(configuration.getMail());
+			var mailSession = buildMailSession(configuration.getMail());
 			log.info("Created mailer");
 			log.info("Opening page");
 			open("https://www.filbleu.fr/espace-perso");
@@ -68,15 +72,11 @@ public class Main{
 									log.info("Downloaded to {}", attestationFile);
 									log.info("Sending mail to {}", card.getRecipientEmail());
 									
-									var email = EmailBuilder.startingBlank()
-											.from(configuration.getMail().getFromName(), configuration.getMail().getFromEmail())
-											.to(card.getRecipientEmail())
-											.withSubject(MessageFormat.format("Attestation FilBleu {0}", attestation.getText()))
-											.withPlainText(MessageFormat.format("Attestation FilBleu du {0}", attestation.getText()))
-											.withAttachment(attestationFile.getName(), new FileDataSource(attestationFile))
-											.buildEmail();
+									sendMail(mailSession, configuration, card.getRecipientEmail(),
+											MessageFormat.format("Attestation FilBleu {0}", attestation.getText()),
+											MessageFormat.format("Attestation FilBleu du {0}", attestation.getText()),
+											attestationFile);
 									
-									mailer.sendMail(email);
 									log.info("Mail sent");
 									card.getDownloaded().add(attestation.getText());
 								}
@@ -91,6 +91,45 @@ public class Main{
 		}, () -> log.error("Failed to load configuration from {}", parameters.getConfigurationFile()));
 	}
 	
+	private static void sendMail(Session session, Configuration configuration, String to, String subject, String body, File attachment) throws MessagingException, IOException{
+		var message = new MimeMessage(session);
+		message.setFrom(new InternetAddress(configuration.getMail().getFromName()));
+		message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
+		message.setSubject(subject);
+		
+		Multipart multipart = new MimeMultipart();
+		
+		MimeBodyPart mimeBodyPart = new MimeBodyPart();
+		mimeBodyPart.setContent(body, "text/plain");
+		multipart.addBodyPart(mimeBodyPart);
+		
+		if(attachment != null && attachment.exists()){
+			MimeBodyPart attachmentBodyPart = new MimeBodyPart();
+			attachmentBodyPart.attachFile(attachment);
+			multipart.addBodyPart(attachmentBodyPart);
+		}
+		
+		message.setContent(multipart);
+		
+		Transport.send(message);
+	}
+	
+	private static Session buildMailSession(Mail mail){
+		Properties prop = new Properties();
+		prop.put("mail.smtp.auth", true);
+		prop.put("mail.smtp.starttls.enable", "true");
+		prop.put("mail.smtp.host", mail.getHost());
+		prop.put("mail.smtp.port", mail.getPort());
+		prop.put("mail.smtp.ssl.trust", mail.getHost());
+		
+		return Session.getInstance(prop, new Authenticator(){
+			@Override
+			protected PasswordAuthentication getPasswordAuthentication(){
+				return new PasswordAuthentication(mail.getUsername(), mail.getPassword());
+			}
+		});
+	}
+	
 	private static WebDriver getDriver(){
 		// var firefoxOptions = new FirefoxOptions();
 		// var driver = new FirefoxDriver(firefoxOptions);
@@ -100,10 +139,5 @@ public class Main{
 		var driver = new ChromeDriver(chromeOptions);
 		
 		return driver;
-	}
-	
-	private static Mailer buildMailer(Mail mail){
-		return MailerBuilder.withSMTPServer(mail.getHost(), mail.getPort(), mail.getUsername(), mail.getPassword())
-				.buildMailer();
 	}
 }

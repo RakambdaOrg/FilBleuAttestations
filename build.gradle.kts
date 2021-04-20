@@ -18,7 +18,6 @@ dependencies {
     }
 
     implementation(libs.jakartaMail)
-    implementation(libs.simpleJavaMail)
 
     implementation(libs.picocli)
     implementation(libs.bundles.jackson)
