@@ -48,7 +48,6 @@ public class Configuration{
 		return Optional.empty();
 	}
 	
-	@NonNull
 	public static void saveConfiguration(@NonNull final Path path, @NonNull Configuration configuration){
 		try{
 			objectWriter.writeValueAsString(configuration);

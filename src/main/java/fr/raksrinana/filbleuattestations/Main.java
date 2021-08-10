@@ -8,7 +8,7 @@ import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeBodyPart;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.mail.internet.MimeMultipart;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -23,7 +23,7 @@ import java.util.Properties;
 import static com.codeborne.selenide.Selenide.*;
 import static org.openqa.selenium.By.*;
 
-@Slf4j
+@Log4j2
 public class Main{
 	public static void main(String[] args){
 		final var parameters = new CLIParameters();

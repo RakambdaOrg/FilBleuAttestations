@@ -2,10 +2,10 @@ plugins {
     idea
     java
     application
-    id("com.github.johnrengelman.shadow") version ("6.1.0")
-    id("com.github.ben-manes.versions") version ("0.38.0")
-    id("io.freefair.lombok") version ("6.0.0-m2")
-    id("com.google.cloud.tools.jib") version ("3.0.0")
+    id("com.github.johnrengelman.shadow") version ("7.0.0")
+    id("com.github.ben-manes.versions") version ("0.39.0")
+    id("io.freefair.lombok") version ("6.1.0-m3")
+    id("com.google.cloud.tools.jib") version ("3.1.2")
 }
 
 group = "fr.raksrinana"
@@ -13,9 +13,7 @@ description = "FilBleuAttestations"
 
 dependencies {
     implementation(libs.slf4j)
-    implementation(libs.logback) {
-        exclude(group = "edu.washington.cs.types.checker", module = "checker-framework")
-    }
+    implementation(libs.bundles.log4j2)
 
     implementation(libs.jakartaMail)
 
@@ -43,8 +41,12 @@ tasks {
 
         doFirst {
             val compilerArgs = options.compilerArgs
+
+            val path = classpath.asPath.split(";")
+                .filter { it.endsWith(".jar") }
+                .joinToString(";")
             compilerArgs.add("--module-path")
-            compilerArgs.add(classpath.asPath)
+            compilerArgs.add(path)
             classpath = files()
         }
     }
@@ -69,7 +71,6 @@ application {
     val moduleName: String by project
     val className: String by project
 
-    mainClassName = className
     mainModule.set(moduleName)
     mainClass.set(className)
 }
@@ -77,6 +78,8 @@ application {
 java {
     sourceCompatibility = JavaVersion.VERSION_16
     targetCompatibility = JavaVersion.VERSION_16
+
+    modularity.inferModulePath.set(false)
 }
 
 jib {

@@ -26,10 +26,9 @@ public class Card{
 		if(this == o){
 			return true;
 		}
-		if(!(o instanceof Card)){
+		if(!(o instanceof Card card)){
 			return false;
 		}
-		Card card = (Card) o;
 		return getId() == card.getId();
 	}
 	
