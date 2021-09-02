@@ -69,8 +69,9 @@ public class Browser{
 	@SneakyThrows
 	@NotNull
 	private static RemoteWebDriver getRemoteDriver(@NotNull BrowserConfiguration configuration){
-		var capabilities = new ChromeOptions();
-		return new RemoteWebDriver(new URL(configuration.getRemoteHost()), capabilities);
+		var options = new ChromeOptions();
+		options.addArguments("--disable-dev-shm-usage");
+		return new RemoteWebDriver(new URL(configuration.getRemoteHost()), options);
 	}
 	
 	@NotNull
