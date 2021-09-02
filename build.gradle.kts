@@ -2,10 +2,10 @@ plugins {
     idea
     java
     application
-    id("com.github.johnrengelman.shadow") version ("7.0.0")
-    id("com.github.ben-manes.versions") version ("0.39.0")
-    id("io.freefair.lombok") version ("6.1.0-m3")
-    id("com.google.cloud.tools.jib") version ("3.1.2")
+    alias(libs.plugins.shadow)
+    alias(libs.plugins.names)
+    alias(libs.plugins.lombok)
+    alias(libs.plugins.jib)
 }
 
 group = "fr.raksrinana"
@@ -21,6 +21,8 @@ dependencies {
     implementation(libs.bundles.jackson)
 
     implementation(libs.selenide)
+
+    compileOnly(libs.jetbrainsAnnotations)
 }
 
 repositories {
@@ -38,17 +40,6 @@ tasks {
 
         options.encoding = "UTF-8"
         options.isDeprecation = true
-
-        doFirst {
-            val compilerArgs = options.compilerArgs
-
-            val path = classpath.asPath.split(";")
-                .filter { it.endsWith(".jar") }
-                .joinToString(";")
-            compilerArgs.add("--module-path")
-            compilerArgs.add(path)
-            classpath = files()
-        }
     }
 
     test {
@@ -78,17 +69,19 @@ application {
 java {
     sourceCompatibility = JavaVersion.VERSION_16
     targetCompatibility = JavaVersion.VERSION_16
-
-    modularity.inferModulePath.set(false)
 }
 
 jib {
     from {
-        image = "adoptopenjdk:16-jre"
+        image = "openjdk:16-slim"
         platforms {
             platform {
                 os = "linux"
                 architecture = "arm64"
+            }
+            platform {
+                os = "linux"
+                architecture = "amd64"
             }
         }
     }
@@ -98,5 +91,8 @@ jib {
             username = project.findProperty("dockerUsername").toString()
             password = project.findProperty("dockerPassword").toString()
         }
+    }
+    container {
+        creationTime = "USE_CURRENT_TIMESTAMP"
     }
 }

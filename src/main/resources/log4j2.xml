@@ -2,7 +2,7 @@
 <Configuration name="Default" status="warn">
     <Appenders>
         <Console name="console" target="SYSTEM_OUT">
-            <PatternLayout disableAnsi="false" pattern="%highlight{%date{HH:mm:ss,SSS}{Europe/Paris} %level [%X{guild_name}] %logger{1.} - %message}%n"/>
+            <PatternLayout disableAnsi="false" pattern="%highlight{%date{HH:mm:ss,SSS}{UTC} %level %logger{1.} - %message}%n"/>
         </Console>
         <RollingFile
                 name="file"
@@ -10,18 +10,28 @@
                 filePattern="\${sys:user.home}/logs/${project.name}.log.%d{yyyy-MM-dd}.gz"
                 ignoreExceptions="false">
             <PatternLayout>
-                <Pattern>%date{ISO8601} %level [%thread] [%X] %logger{1.} - %message%n</Pattern>
+                <Pattern>%highlight{%date{ISO8601} %level [%thread] [%X] %logger{1.} - %message}%n</Pattern>
             </PatternLayout>
             <Policies>
                 <TimeBasedTriggeringPolicy interval="1"/>
             </Policies>
             <DefaultRolloverStrategy max="10"/>
         </RollingFile>
+
+        <Routing name="router">
+            <Routes pattern="\$\${env:LOG_TO_FILE}">
+                <Route ref="file" key="TRUE" />
+            </Routes>
+        </Routing>
     </Appenders>
     <Loggers>
+        <Logger level="error" name="com.codeborne.selenide" additivity="false">
+            <AppenderRef ref="console"/>
+            <AppenderRef ref="router"/>
+        </Logger>
         <Root level="info" additivity="false">
             <AppenderRef ref="console"/>
-            <AppenderRef ref="file"/>
+            <AppenderRef ref="router"/>
         </Root>
     </Loggers>
 </Configuration>

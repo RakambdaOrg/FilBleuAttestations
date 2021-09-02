@@ -1,5 +1,6 @@
 open module fr.raksrinana.filbleuattestations {
 	requires static lombok;
+	requires static org.jetbrains.annotations;
 	requires org.slf4j;
 	requires org.apache.logging.log4j;
 	requires org.apache.logging.log4j.core;
@@ -13,4 +14,6 @@ open module fr.raksrinana.filbleuattestations {
 	requires selenium.firefox.driver;
 	requires info.picocli;
 	requires jakarta.mail;
+	requires selenium.remote.driver;
+	requires selenium.edge.driver;
 }

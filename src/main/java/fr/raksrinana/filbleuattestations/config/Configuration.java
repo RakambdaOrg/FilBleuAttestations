@@ -34,6 +34,8 @@ public class Configuration{
 	private Set<Card> cards;
 	@JsonProperty("mail")
 	private Mail mail;
+	@JsonProperty("browser")
+	private BrowserConfiguration browser = new BrowserConfiguration();
 	
 	@NonNull
 	public static Optional<Configuration> loadConfiguration(@NonNull final Path path){

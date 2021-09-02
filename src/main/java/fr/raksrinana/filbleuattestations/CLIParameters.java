@@ -2,14 +2,15 @@ package fr.raksrinana.filbleuattestations;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import picocli.CommandLine;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
 import java.nio.file.Path;
 
 @NoArgsConstructor
 @Getter
-@CommandLine.Command(name = "filbleuattestations", mixinStandardHelpOptions = true)
+@Command(name = "filbleuattestations", mixinStandardHelpOptions = true)
 public class CLIParameters{
-	@CommandLine.Option(names = {
+	@Option(names = {
 			"-c",
 			"--config"
 	},
