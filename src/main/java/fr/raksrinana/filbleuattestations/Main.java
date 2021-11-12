@@ -36,7 +36,7 @@ public class Main{
 				log.info("Configuration loaded");
 				
 				log.info("Opening page");
-				open("https://www.filbleu.fr/espace-perso");
+				open("https://www.filbleu.fr/mon-espace-perso");
 				
 				var perturbation = $(className("actperturb"));
 				if(perturbation.isDisplayed()){
@@ -45,12 +45,18 @@ public class Main{
 				}
 				
 				log.info("Logging in");
-				$(id("username")).setValue(configuration.getEmail());
-				$(id("password")).setValue(configuration.getPassword());
-				$(id("form-login-submit")).find(tagName("button")).click();
+				$(id("username-field")).setValue(configuration.getEmail());
+				$(id("password-field")).setValue(configuration.getPassword());
+				$(id("login-button")).find(tagName("button")).click();
 				log.info("Logged in");
 				
-				configuration.getCards().forEach(card -> processCard(mailer, card));
+				configuration.getCards().forEach(card -> {
+					try{
+						processCard(mailer, card);
+					}catch(Exception e){
+						log.error("Failed to process card", e);
+					}
+				});
 			}
 			finally{
 				Browser.close();
@@ -61,14 +67,20 @@ public class Main{
 	
 	private static void processCard(Mailer mailer, Card card){
 		log.info("Processing card {}", card.getId());
-		open("https://www.filbleu.fr/espace-perso/mes-cartes/" + card.getId());
-		$(className("attestation"))
-				.findAll(By.tagName("li"))
+		open("https://www.filbleu.fr/mon-espace-perso/mes-cartes");
+		$$("li[data-card-uid]").stream()
+			.filter(e -> Objects.equals(e.attr("data-card-uid"), card.getUid()))
+			.findFirst()
+			.orElseThrow(() -> new RuntimeException("Failed to find card " + card.getId()))
+			.click();
+		$(className(".espace-perso__factu"))
+				.findAll(By.cssClass("list-files__link"))
 				.stream()
-				.map(elem -> elem.find(By.tagName("a")))
+				.filter(e -> !e.hasClass("sr-only"))
 				.forEach(attestation -> {
-					if(!card.getDownloaded().contains(attestation.getText())){
-						log.info("Processing attestation '{}'", attestation.getText());
+					var attestationName = attestation.getText().strip().toLowerCase();
+					if(!card.getDownloaded().contains(attestationName)){
+						log.info("Processing attestation '{}'", attestationName);
 						try{
 							var attestationFile = attestation.download(30000);
 							attestationFile.deleteOnExit();
@@ -76,10 +88,10 @@ public class Main{
 							log.info("Sending mail to {}", card.getRecipientEmail());
 							
 							if(mailer.sendMail(card.getRecipientEmail(),
-									MessageFormat.format("Attestation FilBleu {0}", attestation.getText()),
-									MessageFormat.format("Attestation FilBleu du {0}", attestation.getText()),
+									MessageFormat.format("Attestation FilBleu {0}", attestationName),
+									MessageFormat.format("Attestation FilBleu du {0}", attestationName),
 									attestationFile)){
-								card.getDownloaded().add(attestation.getText());
+								card.getDownloaded().add(attestationName);
 							}
 						}
 						catch(Exception e){
