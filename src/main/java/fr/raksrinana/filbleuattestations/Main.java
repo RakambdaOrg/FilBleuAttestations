@@ -3,13 +3,13 @@ package fr.raksrinana.filbleuattestations;
 import fr.raksrinana.filbleuattestations.config.Card;
 import fr.raksrinana.filbleuattestations.config.Configuration;
 import lombok.extern.log4j.Log4j2;
-import org.openqa.selenium.By;
 import picocli.CommandLine;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.MessageFormat;
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.open;
+import java.util.Objects;
+import static com.codeborne.selenide.Condition.cssClass;
+import static com.codeborne.selenide.Selenide.*;
 import static org.openqa.selenium.By.*;
 
 @Log4j2
@@ -45,9 +45,15 @@ public class Main{
 				}
 				
 				log.info("Logging in");
-				$(id("username-field")).setValue(configuration.getEmail());
-				$(id("password-field")).setValue(configuration.getPassword());
-				$(id("login-button")).find(tagName("button")).click();
+				var username = $(id("username-field"));
+				username.click();
+				username.setValue(configuration.getEmail());
+				
+				var password = $(id("password-field"));
+				password.click();
+				password.setValue(configuration.getPassword());
+				
+				$(id("login-button")).click();
 				log.info("Logged in");
 				
 				configuration.getCards().forEach(card -> {
@@ -73,10 +79,10 @@ public class Main{
 			.findFirst()
 			.orElseThrow(() -> new RuntimeException("Failed to find card " + card.getId()))
 			.click();
-		$(className(".espace-perso__factu"))
-				.findAll(By.cssClass("list-files__link"))
+		$(className("espace-perso__factu"))
+				.findAll(className("list-files__link"))
 				.stream()
-				.filter(e -> !e.hasClass("sr-only"))
+				.filter(e -> !e.has(cssClass("sr-only")))
 				.forEach(attestation -> {
 					var attestationName = attestation.getText().strip().toLowerCase();
 					if(!card.getDownloaded().contains(attestationName)){

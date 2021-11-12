@@ -16,6 +16,8 @@ import java.util.Set;
 public class Card{
 	@JsonProperty("id")
 	private long id;
+	@JsonProperty("uid")
+	private String uid;
 	@JsonProperty("recipientEmail")
 	private String recipientEmail;
 	@JsonProperty("downloaded")
