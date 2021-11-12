@@ -67,13 +67,13 @@ application {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_16
-    targetCompatibility = JavaVersion.VERSION_16
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 jib {
     from {
-        image = "openjdk:16-slim"
+        image = "openjdk:17-slim"
         platforms {
             platform {
                 os = "linux"
