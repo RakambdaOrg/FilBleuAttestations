@@ -1,4 +1,4 @@
-package fr.raksrinana.filbleuattestations;
+package fr.rakambda.filbleuattestations;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

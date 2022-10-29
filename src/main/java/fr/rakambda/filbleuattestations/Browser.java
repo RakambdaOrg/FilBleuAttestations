@@ -1,8 +1,8 @@
-package fr.raksrinana.filbleuattestations;
+package fr.rakambda.filbleuattestations;
 
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.WebDriverRunner;
-import fr.raksrinana.filbleuattestations.config.BrowserConfiguration;
+import fr.rakambda.filbleuattestations.config.BrowserConfiguration;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import org.jetbrains.annotations.NotNull;

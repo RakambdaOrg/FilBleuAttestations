@@ -1,6 +1,6 @@
-package fr.raksrinana.filbleuattestations;
+package fr.rakambda.filbleuattestations;
 
-import fr.raksrinana.filbleuattestations.config.Mail;
+import fr.rakambda.filbleuattestations.config.Mail;
 import jakarta.mail.*;
 import jakarta.mail.internet.*;
 import lombok.extern.log4j.Log4j2;

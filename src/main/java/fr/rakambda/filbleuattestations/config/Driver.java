@@ -1,4 +1,4 @@
-package fr.raksrinana.filbleuattestations.config;
+package fr.rakambda.filbleuattestations.config;
 
 public enum Driver{
 	CHROME, FIREFOX, EDGE, REMOTE

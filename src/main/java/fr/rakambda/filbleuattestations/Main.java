@@ -1,7 +1,7 @@
-package fr.raksrinana.filbleuattestations;
+package fr.rakambda.filbleuattestations;
 
-import fr.raksrinana.filbleuattestations.config.Card;
-import fr.raksrinana.filbleuattestations.config.Configuration;
+import fr.rakambda.filbleuattestations.config.Card;
+import fr.rakambda.filbleuattestations.config.Configuration;
 import lombok.extern.log4j.Log4j2;
 import picocli.CommandLine;
 import java.nio.file.Path;

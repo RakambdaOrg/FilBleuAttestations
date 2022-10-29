@@ -1,4 +1,4 @@
-package fr.raksrinana.filbleuattestations.config;
+package fr.rakambda.filbleuattestations.config;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
