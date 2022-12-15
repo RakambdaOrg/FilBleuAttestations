@@ -5,7 +5,7 @@ log4j2-slf4j-version = "2.19.0"
 picocli-version = "4.7.0"
 jackson-version = "2.14.1"
 jakarta-mail-version = "2.0.1"
-selenide-version = "6.10.2"
+selenide-version = "6.10.3"
 jetbrains-annotations-version = "23.1.0"
 
 shadow-version = "7.1.2"
