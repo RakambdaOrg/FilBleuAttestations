@@ -10,7 +10,7 @@ jetbrains-annotations-version = "24.0.0"
 
 shadow-version = "7.1.2"
 names-version = "0.45.0"
-lombok-version = "6.6.1"
+lombok-version = "6.6.2"
 jib-version = "3.3.1"
 
 [libraries]
