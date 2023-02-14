@@ -74,13 +74,14 @@ public class Main{
 	private static void processCard(Mailer mailer, Card card){
 		log.info("Processing card {}", card.getId());
 		open("https://www.filbleu.fr/mon-espace-perso/mes-cartes");
-		$$("li[data-card-uid]").stream()
+		$$("li[data-card-uid]").asDynamicIterable().stream()
 			.filter(e -> Objects.equals(e.attr("data-card-uid"), card.getUid()))
 			.findFirst()
 			.orElseThrow(() -> new RuntimeException("Failed to find card " + card.getId()))
 			.click();
 		$(className("espace-perso__factu"))
 				.findAll(className("list-files__link"))
+				.asDynamicIterable()
 				.stream()
 				.filter(e -> !e.has(cssClass("sr-only")))
 				.forEach(attestation -> {
