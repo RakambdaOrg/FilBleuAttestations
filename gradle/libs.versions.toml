@@ -7,10 +7,10 @@ jackson-version = "2.14.2"
 jakarta-mail-version = "2.0.1"
 selenide-version = "6.11.2"
 jetbrains-annotations-version = "24.0.0"
+lombok-version = "1.18.26"
 
 shadow-version = "7.1.2"
 names-version = "0.45.0"
-lombok-version = "6.6.1"
 jib-version = "3.3.1"
 
 [libraries]
@@ -24,6 +24,7 @@ jackson-databind = { group = "com.fasterxml.jackson.core", name = "jackson-datab
 jakartaMail = { group = "com.sun.mail", name = "jakarta.mail", version.ref = "jakarta-mail-version" }
 selenide = { group = "com.codeborne", name = "selenide", version.ref = "selenide-version" }
 jetbrainsAnnotations = { group = "org.jetbrains", name = "annotations", version.ref = "jetbrains-annotations-version" }
+lombok = { group = "org.projectlombok", name = "lombok", version.ref = "lombok-version" }
 
 [bundles]
 jackson = ["jackson-core", "jackson-annotations", "jackson-databind"]
@@ -32,5 +33,4 @@ log4j2 = ["log4j2-core", "log4j2-slf4j"]
 [plugins]
 shadow = { id = "com.github.johnrengelman.shadow", version.ref = "shadow-version" }
 names = { id = "com.github.ben-manes.versions", version.ref = "names-version" }
-lombok = { id = "io.freefair.lombok", version.ref = "lombok-version" }
 jib = { id = "com.google.cloud.tools.jib", version.ref = "jib-version" }

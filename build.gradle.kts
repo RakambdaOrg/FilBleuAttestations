@@ -4,7 +4,6 @@ plugins {
     application
     alias(libs.plugins.shadow)
     alias(libs.plugins.names)
-    alias(libs.plugins.lombok)
     alias(libs.plugins.jib)
 }
 
@@ -23,6 +22,9 @@ dependencies {
     implementation(libs.selenide)
 
     compileOnly(libs.jetbrainsAnnotations)
+    compileOnly(libs.lombok)
+
+    annotationProcessor(libs.lombok)
 }
 
 repositories {
