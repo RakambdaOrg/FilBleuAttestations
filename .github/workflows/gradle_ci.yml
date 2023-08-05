@@ -1,32 +1,24 @@
-name: CI
+name: Build
 
-on: [ push ]
-
-env:
-  APP_JAVA_VERSION: 20
+on:
+  push:
+  workflow_dispatch:
 
 jobs:
   build:
-    name: Build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout source
-        uses: actions/checkout@v3
-      - name: Set up JDK
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'adopt'
-          java-version: ${{ env.APP_JAVA_VERSION }}
-          cache: 'gradle'
-      - uses: actions/cache@v3
-        name: Cache gradle wrapper
-        with:
-          path: ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
-      - name: Set gradle permissions
-        run: chmod +x gradlew
-      - name: Check project
-        run: ./gradlew check
-      - name: Push on Docker Hub
-        if: success() && github.ref == 'refs/heads/main'
-        run: ./gradlew jib -PdockerUsername=${{ secrets.DOCKER_USERNAME }} -PdockerPassword=${{ secrets.DOCKER_TOKEN }}
+    uses: Rakambda/rakambda-github-workflows/.github/workflows/gradle-build.yml@main
+    with:
+      java-version: ${{ vars.JAVA_VERSION }}
+
+  docker:
+    uses: Rakambda/rakambda-github-workflows/.github/workflows/gradle-jib-publish.yml@main
+    if: github.ref == ${{ github.event.repository.default_branch }}
+    needs:
+      - build
+    with:
+      java-version: ${{ vars.JAVA_VERSION }}
+      docker-image: ${{ vars.DOCKER_IMAGE }}
+    secrets:
+      docker-repo: ${{ secrets.DOCKER_REPO }}
+      docker-username: ${{ secrets.DOCKER_USERNAME }}
+      docker-token: ${{ secrets.DOCKER_TOKEN }}
