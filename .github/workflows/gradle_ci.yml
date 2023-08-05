@@ -18,6 +18,7 @@ jobs:
     with:
       java-version: ${{ vars.JAVA_VERSION }}
       docker-image: ${{ vars.DOCKER_IMAGE }}
+      docker-tag: latest
     secrets:
       docker-repo: ${{ secrets.DOCKER_REPO }}
       docker-username: ${{ secrets.DOCKER_USERNAME }}
