@@ -79,7 +79,13 @@ public class Main{
 			.findFirst()
 			.orElseThrow(() -> new RuntimeException("Failed to find card " + card.getId()))
 			.click();
-		$(className("espace-perso__factu"))
+		var espacePerso = $(className("espace-perso__factu"));
+		if(!espacePerso.exists()) {
+			log.warning("Billing area not visible");
+			return;
+		}
+		
+		espacePerso
 				.findAll(className("list-files__link"))
 				.asDynamicIterable()
 				.stream()
