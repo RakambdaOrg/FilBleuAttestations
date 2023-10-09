@@ -81,7 +81,7 @@ public class Main{
 			.click();
 		var espacePerso = $(className("espace-perso__factu"));
 		if(!espacePerso.exists()) {
-			log.warning("Billing area not visible");
+			log.warn("Billing area not visible");
 			return;
 		}
 		
