@@ -7,7 +7,7 @@ jackson-version = "2.17.0"
 jakarta-mail-version = "2.0.1"
 selenide-version = "7.2.1"
 jetbrains-annotations-version = "24.1.0"
-lombok-version = "1.18.30"
+lombok-version = "1.18.32"
 
 shadow-version = "8.1.1"
 names-version = "0.51.0"
