@@ -102,7 +102,7 @@ public class Main{
 							
 							if(mailer.sendMail(card.getRecipientEmail(),
 									MessageFormat.format("Attestation FilBleu {0}", attestationName),
-									MessageFormat.format("Attestation FilBleu du {0}", attestationName),
+									MessageFormat.format("Attestation FilBleu de {0}", attestationName),
 									attestationFile)){
 								card.getDownloaded().add(attestationName);
 							}
