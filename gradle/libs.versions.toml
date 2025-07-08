@@ -4,7 +4,7 @@ log4j2-version = "2.25.0"
 picocli-version = "4.7.7"
 jackson-version = "2.19.1"
 jakarta-mail-version = "2.0.1"
-selenide-version = "7.9.3"
+selenide-version = "7.9.4"
 jetbrains-annotations-version = "26.0.2"
 lombok-version = "1.18.38"
 
