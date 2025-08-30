@@ -8,7 +8,7 @@ selenide-version = "7.10.0"
 jetbrains-annotations-version = "26.0.2"
 lombok-version = "1.18.38"
 
-shadow-version = "9.0.2"
+shadow-version = "9.1.0"
 jib-version = "3.4.5"
 
 [libraries]
