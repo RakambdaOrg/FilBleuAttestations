@@ -24,8 +24,8 @@ dependencies {
     implementation(libs.bundles.jackson)
 
     implementation(libs.selenide)
+    implementation(libs.jSpecify)
 
-    compileOnly(libs.jetbrainsAnnotations)
     compileOnly(libs.lombok)
 
     annotationProcessor(libs.lombok)

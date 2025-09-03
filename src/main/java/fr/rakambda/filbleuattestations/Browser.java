@@ -5,7 +5,7 @@ import com.codeborne.selenide.WebDriverRunner;
 import fr.rakambda.filbleuattestations.config.BrowserConfiguration;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -26,7 +26,7 @@ import static com.codeborne.selenide.Selenide.closeWebDriver;
 public class Browser {
     private static WebDriver driver;
 
-    @NotNull
+    @NonNull
     public static WebDriver setup(BrowserConfiguration configuration) {
         Configuration.headless = configuration.isHeadless();
         var driver = getDriver(configuration);
@@ -39,7 +39,7 @@ public class Browser {
         driver = null;
     }
 
-    private static WebDriver getDriver(@NotNull BrowserConfiguration config) {
+    private static WebDriver getDriver(@NonNull BrowserConfiguration config) {
         if (Objects.isNull(driver)) {
             driver = switch (config.getDriver()) {
                 case EDGE -> getEdgeDriver();
@@ -52,14 +52,14 @@ public class Browser {
         return driver;
     }
 
-    @NotNull
+    @NonNull
     private static FirefoxDriver getFirefoxDriver() {
         var firefoxOptions = new FirefoxOptions();
         return new FirefoxDriver(firefoxOptions);
     }
 
-    @NotNull
-    private static ChromeDriver getChromeDriver(@NotNull BrowserConfiguration configuration) {
+    @NonNull
+    private static ChromeDriver getChromeDriver(@NonNull BrowserConfiguration configuration) {
         var options = new ChromeOptions();
 
         Optional.ofNullable(configuration.getBinary())
@@ -71,14 +71,14 @@ public class Browser {
     }
 
     @SneakyThrows
-    @NotNull
-    private static RemoteWebDriver getRemoteDriver(@NotNull BrowserConfiguration configuration) {
+    @NonNull
+    private static RemoteWebDriver getRemoteDriver(@NonNull BrowserConfiguration configuration) {
         var options = new ChromeOptions();
         options.addArguments("--disable-dev-shm-usage");
         return new RemoteWebDriver(new URL(configuration.getRemoteHost()), options);
     }
 
-    @NotNull
+    @NonNull
     private static EdgeDriver getEdgeDriver() {
         var options = new EdgeOptions();
         return new EdgeDriver(options);

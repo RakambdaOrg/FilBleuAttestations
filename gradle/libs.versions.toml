@@ -5,7 +5,7 @@ picocli-version = "4.7.7"
 jackson-version = "2.20.0"
 jakarta-mail-version = "2.0.2"
 selenide-version = "7.10.0"
-jetbrains-annotations-version = "26.0.2"
+jspecify-version = "1.0.0"
 lombok-version = "1.18.38"
 
 shadow-version = "9.1.0"
@@ -23,7 +23,7 @@ jackson-annotations = { group = "com.fasterxml.jackson.core", name = "jackson-an
 jackson-databind = { group = "com.fasterxml.jackson.core", name = "jackson-databind" }
 jakartaMail = { group = "com.sun.mail", name = "jakarta.mail", version.ref = "jakarta-mail-version" }
 selenide = { group = "com.codeborne", name = "selenide", version.ref = "selenide-version" }
-jetbrainsAnnotations = { group = "org.jetbrains", name = "annotations", version.ref = "jetbrains-annotations-version" }
+jSpecify = { group = "org.jspecify", name = "jspecify", version.ref = "jspecify-version" }
 lombok = { group = "org.projectlombok", name = "lombok", version.ref = "lombok-version" }
 
 [bundles]

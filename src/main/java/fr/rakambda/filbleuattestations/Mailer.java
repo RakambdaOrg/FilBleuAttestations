@@ -4,8 +4,8 @@ import fr.rakambda.filbleuattestations.config.Mail;
 import jakarta.mail.*;
 import jakarta.mail.internet.*;
 import lombok.extern.log4j.Log4j2;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
@@ -35,14 +35,14 @@ public class Mailer{
 		return true;
 	}
 	
-	private void sendMessage(@NotNull Session session, @NotNull Message message) throws MessagingException{
+	private void sendMessage(@NonNull Session session, @NonNull Message message) throws MessagingException{
 		var transport = session.getTransport("smtps");
 		transport.connect(configurationMail.getHost(), configurationMail.getFromEmail(), configurationMail.getPassword());
 		transport.sendMessage(message, message.getAllRecipients());
 	}
 	
-	@NotNull
-	private Message buildMessage(@NotNull Session session, @NotNull String recipient, @NotNull String subject, @NotNull String body, @Nullable File attachment) throws MessagingException, IOException{
+	@NonNull
+	private Message buildMessage(@NonNull Session session, @NonNull String recipient, @NonNull String subject, @NonNull String body, @Nullable File attachment) throws MessagingException, IOException{
 		var message = new MimeMessage(session);
 		message.setFrom(new InternetAddress(configurationMail.getFromName()));
 		message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipient));
@@ -64,8 +64,8 @@ public class Mailer{
 		return message;
 	}
 	
-	@NotNull
-	private Session getSession(@NotNull Properties properties){
+	@NonNull
+	private Session getSession(@NonNull Properties properties){
 		return Session.getInstance(properties, new Authenticator(){
 			@Override
 			protected PasswordAuthentication getPasswordAuthentication(){
@@ -74,7 +74,7 @@ public class Mailer{
 		});
 	}
 	
-	@NotNull
+	@NonNull
 	private Properties getProperties(){
 		var properties = new Properties();
 		properties.put("mail.smtp.auth", true);
