@@ -8,7 +8,7 @@ selenide-version = "7.17.0"
 jspecify-version = "1.0.0"
 lombok-version = "1.18.46"
 
-shadow-version = "9.6.0"
+shadow-version = "9.6.1"
 jib-version = "3.5.4"
 
 [libraries]
