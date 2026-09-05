@@ -6,7 +6,7 @@ jackson-version = "2.22.2"
 jakarta-mail-version = "2.0.2"
 selenide-version = "7.18.1"
 jspecify-version = "1.0.1"
-lombok-version = "1.18.46"
+lombok-version = "1.18.48"
 
 shadow-version = "9.6.1"
 jib-version = "3.5.4"
